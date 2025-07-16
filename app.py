@@ -22,43 +22,47 @@ if menu == "Min-Max Normalization":
             st.error("⚠️ Max value must be greater than min value.")
 
 elif menu == "Log-Normal Distribution":
-    st.header("📊 Log-Normal vs Negative Log-Normal")
+    st.header("📊 Log-Normal Distribution (Original + Normalized)")
 
-    mu = st.number_input("Mean (mu):", value=0.5)
-    sigma = st.number_input("Standard Deviation (sigma):", value=0.1)
+    mu = st.number_input("Mean (mu):", value=0.9)
+    sigma = st.number_input("Standard Deviation (sigma):", value=0.01)
     size = st.slider("Sample Size", 1000, 20000, 10000, step=1000)
 
-    if st.button("Generate & Plot Distributions"):
+    if st.button("Generate & Plot Distribution"):
         np.random.seed(42)
-        lognorm_data = np.random.lognormal(mean=mu, sigma=sigma, size=size)
-        neg_lognorm_data = -lognorm_data
+        e = np.e
+        samples = np.random.lognormal(mean=mu, sigma=sigma, size=size)
 
-        # Scale both
-        scaler = MinMaxScaler()
-        lognorm_scaled = scaler.fit_transform(lognorm_data.reshape(-1, 1)).flatten()
-        neg_lognorm_scaled = scaler.fit_transform(neg_lognorm_data.reshape(-1, 1)).flatten()
+        # Normalize with min=1 and max=e
+        x_min, x_max = 1, e
+        samples_clipped = np.clip(samples, x_min, x_max)
+        samples_norm = (samples_clipped - x_min) / (x_max - x_min)
 
         # Calculate means
-        lognorm_mean = np.mean(lognorm_scaled)
-        neg_lognorm_mean = np.mean(neg_lognorm_scaled)
+        mean_original = np.mean(samples)
+        mean_normalized = np.mean(samples_norm)
 
-        # Plotting
-        fig, ax = plt.subplots(1, 2, figsize=(12, 5))
+        # Plot both
+        fig, axs = plt.subplots(1, 2, figsize=(14, 5))
 
-        ax[0].hist(lognorm_scaled, bins=100, color='steelblue', edgecolor='black', alpha=0.7, density=True)
-        ax[0].set_title("Scaled Log-Normal (0–1)")
-        ax[0].set_xlabel("Value")
-        ax[0].set_ylabel("Density")
+        axs[0].hist(samples, bins=50, color='cornflowerblue', edgecolor='black')
+        axs[0].axvline(x=e, color='red', linestyle='dashed', linewidth=2, label='e ≈ 2.718')
+        axs[0].set_title(f'Original Log-Normal (μ={mu}, σ={sigma})')
+        axs[0].set_xlabel('Value')
+        axs[0].set_ylabel('Frequency')
+        axs[0].legend()
+        axs[0].grid(True)
 
-        ax[1].hist(neg_lognorm_scaled, bins=100, color='salmon', edgecolor='black', alpha=0.7, density=True)
-        ax[1].set_title("Scaled Negative Log-Normal (0–1)")
-        ax[1].set_xlabel("Value")
-        ax[1].set_ylabel("Density")
+        axs[1].hist(samples_norm, bins=50, color='mediumseagreen', edgecolor='black')
+        axs[1].set_title('Normalized Samples (min=1, max=e)')
+        axs[1].set_xlabel('Normalized Value (0 to 1)')
+        axs[1].set_ylabel('Frequency')
+        axs[1].grid(True)
 
         st.pyplot(fig)
 
-        # Show mean values
-        st.subheader("📈 Scaled Distribution Means")
-        st.write(f"🔵 **Scaled Log-Normal Mean:** `{lognorm_mean:.4f}`")
-        st.write(f"🔴 **Scaled Negative Log-Normal Mean:** `{neg_lognorm_mean:.4f}`")
+        # Show means
+        st.subheader("📈 Mean Values")
+        st.write(f"🔵 **Original Mean:** `{mean_original:.4f}`")
+        st.write(f"🟢 **Normalized Mean (min=1, max=e → 0-1):** `{mean_normalized:.4f}`")
 
