@@ -46,7 +46,8 @@ elif menu == "Log-Normal Distribution":
         fig, axs = plt.subplots(1, 2, figsize=(14, 5))
 
         axs[0].hist(samples, bins=50, color='cornflowerblue', edgecolor='black')
-        axs[0].axvline(x=e, color='red', linestyle='dashed', linewidth=2, label='e ≈ 2.718')
+        axs[0].axvline(x=e, color='red', linestyle='dashed', linewidth=2, label='e ≈ 2.718, miu=1')
+        axs[0].axvline(x=e, color='red', linestyle='dashed', linewidth=2, label='1 ≈ miu=0')
         axs[0].set_title(f'Original Log-Normal (μ={mu}, σ={sigma})')
         axs[0].set_xlabel('Value')
         axs[0].set_ylabel('Frequency')
