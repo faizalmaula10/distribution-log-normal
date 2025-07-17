@@ -47,7 +47,7 @@ elif menu == "Log-Normal Distribution":
 
         axs[0].hist(samples, bins=50, color='cornflowerblue', edgecolor='black')
         axs[0].axvline(x=e, color='red', linestyle='dashed', linewidth=2, label='e ≈ 2.718, miu=1')
-        axs[0].axvline(x=e, color='red', linestyle='dashed', linewidth=2, label='1 ≈ miu=0')
+        axs[0].axvline(x=1, color='red', linestyle='dashed', linewidth=2, label='1 ≈ miu=0')
         axs[0].set_title(f'Original Log-Normal (μ={mu}, σ={sigma})')
         axs[0].set_xlabel('Value')
         axs[0].set_ylabel('Frequency')
